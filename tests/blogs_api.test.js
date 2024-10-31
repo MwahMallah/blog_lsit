@@ -76,9 +76,9 @@ test.only('posting blog without url results in response code 400', async () => {
         likes: 5,
     };
 
-    const response = await api.post('/api/blogs')
-                        .send(newBlog)
-                        .expect(400);
+    await api.post('/api/blogs')
+        .send(newBlog)
+        .expect(400);
 });
 
 test.only('Blog might be deleted', async () => {
@@ -92,12 +92,32 @@ test.only('Blog might be deleted', async () => {
 });
 
 test.only('Deleting blog with wrong id results in 404', async () => {
-    const blogId = '64fa12e3d1b223ad9a8b4567';
+    const blogId = '64fa12e3d1b223ad9a8b4567'; //wrong dummy id
 
     await api.delete(`/api/blogs/${blogId}`)
                         .expect(404);
                         
     assert.strictEqual((await blogsInDb()).length, 6);
+});
+
+test.only('Blog might be updated', async () => {
+    const blogs = await blogsInDb();
+    const blog = blogs[0];
+    blog.likes = 17;
+
+    const response = await api.put(`/api/blogs/${blog.id}`)
+                        .send(blog)
+                        .expect(200);
+
+    const updatedBlog = response.body;
+    assert.strictEqual(updatedBlog.likes, blog.likes);
+});
+
+test.only('Blog with wrong id results in 404', async () => {
+    const blogId = '64fa12e3d1b223ad9a8b4567'; //wrong dummy id
+
+    await api.put(`/api/blogs/${blogId}`, {})
+                        .expect(404);
 });
   
 after(async () => {
