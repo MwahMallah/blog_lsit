@@ -80,6 +80,25 @@ test.only('posting blog without url results in response code 400', async () => {
                         .send(newBlog)
                         .expect(400);
 });
+
+test.only('Blog might be deleted', async () => {
+    const blogs = await blogsInDb();
+    const blogId = blogs[0].id
+
+    await api.delete(`/api/blogs/${blogId}`)
+                        .expect(204);
+
+    assert.strictEqual((await blogsInDb()).length, 5);
+});
+
+test.only('Deleting blog with wrong id results in 404', async () => {
+    const blogId = '64fa12e3d1b223ad9a8b4567';
+
+    await api.delete(`/api/blogs/${blogId}`)
+                        .expect(404);
+                        
+    assert.strictEqual((await blogsInDb()).length, 6);
+});
   
 after(async () => {
     await mongoose.connection.close();
