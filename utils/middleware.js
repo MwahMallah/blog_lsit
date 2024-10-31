@@ -6,6 +6,8 @@ function errorHandler(err, req, res, next) {
 
     if (err.name === 'ValidationError') {
         res.status(400).send({error: err.message});
+    } if (err.name === 'CastError') {
+        res.status(400).send({error: 'ObjectId must be 24 char length hex value'})
     }
 }
 
