@@ -1,9 +1,13 @@
 function info(...msg) {
-    console.log(...msg);
+    if (process.env.NODE_ENV !== 'test') { 
+        console.log(...msg)
+    }
 }
 
 function error(...msg) {
-    console.error(...msg);
+    if (process.env.NODE_ENV !== 'test') { 
+        console.error(...msg);
+    }
 }
 
 module.exports = {info, error};
