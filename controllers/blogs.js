@@ -6,14 +6,15 @@ blogsRouter.get("/", async (req, res) => {
     res.json(blogs);
 });
 
-blogsRouter.post('/', (req, res) => {
+blogsRouter.post('/', (req, res, next) => {
     const blog = new Blog(req.body)
 
     blog
-    .save()
-    .then(result => {
-        res.status(201).json(result);
-    })
+        .save()
+        .then(result => {
+            res.status(201).json(result);
+        })
+        .catch(err => next(err));
 })
 
 
